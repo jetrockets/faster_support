@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FasterSupport
   def self.instance
     @instance ||= new
@@ -19,11 +21,11 @@ class FasterSupport
     # https://bugs.ruby-lang.org/issues/12548
     str = sprintf(format_string, amount.round(2))
 
-    # put the second zero after . if it is missing 
+    # put the second zero after . if it is missing
     idx = str.rindex('.'.freeze)
     (3 - (str.length - idx)).times do
       str.insert(-1, '0'.freeze)
-    end 
+    end
     min_idx = (amount < zero(amount.class)) ? 1 : 0
     idx -= 3
     while idx > min_idx
