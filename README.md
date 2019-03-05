@@ -1,8 +1,6 @@
 # FasterSupport
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/faster_support`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+ActiveSupport helpers done right
 
 ## Installation
 
@@ -20,19 +18,35 @@ Or install it yourself as:
 
     $ gem install faster_support
 
-## Usage
+## Performance
 
 TODO: Write usage instructions here
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Checking for BigDecimal
+Warming up --------------------------------------
+       ActiveSupport   874.000  i/100ms
+       FasterSupport    30.613k i/100ms
+Calculating -------------------------------------
+       ActiveSupport      9.263k (± 5.2%) i/s -     46.322k in   5.015584s
+       FasterSupport    386.647k (± 2.9%) i/s -      1.959M in   5.071773s
+
+Comparison:
+       FasterSupport:   386647.3 i/s
+       ActiveSupport:     9262.8 i/s - 41.74x  slower
+
+| Memory        | Allocated | Retained |
++---------------+-----------+----------+
+| ActiveSupport | 1016800   | 0        |
+| FasterSupport | 13200     | 0        |
++---------------+-----------+----------+
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/igor-alexandrov/faster_support.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jetrockets/faster_support.
 
 ## License
 

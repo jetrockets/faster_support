@@ -2,14 +2,34 @@
 
 require_relative 'suite'
 
-@float_examples = (1..100_000).map{|_| rand * 10**(rand(12)) - 50_000_000 }
-@int_examples = (1..100_000).map{|_| (rand(100_000_000) - 50_000_000)}
-@decimal_examples = @float_examples.map{|x| BigDecimal(x.to_s)}
-@rational_examples = @int_examples.map{|x| Rational(x, rand(10_000)+1)}
+puts "ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n"
+puts "\nChecking for BigDecimal\n"
+
+float = rand * 10**(rand(12)) - 50_000_000
+decimal = BigDecimal(float.to_s)
 
 currency_unit = '$'
-puts "\nBenchmark BigDecimal:"
+
 Benchmark.ips do |x|
-  x.report("number_to_currency AS:") { @decimal_examples.each {|amount| ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(amount, {}) } }
-  x.report("number_to_currency FS:") { @decimal_examples.each {|amount| FasterSupport::Numbers.number_to_currency_u_n(amount) } }
+  x.report('ActiveSupport') { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: "%u %n") }
+  x.report('FasterSupport') { FasterSupport::Numbers.number_to_currency_u_n(decimal, unit: currency_unit) }
+
+  x.compare!
 end
+
+as_result = MemoryProfiler.report do
+  100.times { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: "%u %n") }
+end
+fs_result = MemoryProfiler.report do
+  100.times { FasterSupport::Numbers.number_to_currency_u_n(decimal, unit: currency_unit) }
+end
+
+table = Terminal::Table.new do |t|
+  t.headings = ['Memory', 'Allocated', 'Retained']
+  t.rows = [
+    ['ActiveSupport', as_result.total_allocated_memsize, as_result.total_retained_memsize],
+    ['FasterSupport', fs_result.total_allocated_memsize, fs_result.total_retained_memsize]
+  ]
+end
+
+puts table

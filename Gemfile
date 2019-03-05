@@ -6,7 +6,9 @@ source "https://rubygems.org"
 gemspec
 
 group :benchmarks do
-  gem 'benchmark-ips'
   gem 'activesupport'
+  gem 'benchmark-ips'
+  gem 'memory_profiler'
+  gem 'terminal-table'
 end
 
