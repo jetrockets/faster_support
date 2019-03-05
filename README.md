@@ -24,6 +24,7 @@ TODO: Write usage instructions here
 
 ## Development
 
+```
 ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n
 
 Checking for BigDecimal
@@ -43,6 +44,7 @@ Comparison:
 | ActiveSupport | 1016800   | 0        |
 | FasterSupport | 13200     | 0        |
 +---------------+-----------+----------+
+```
 
 ## Contributing
 
