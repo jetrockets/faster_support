@@ -16,14 +16,8 @@ module FasterSupport
         }
       end
 
-      def number_to_currency(amount, unit:, with_space:)
-        str = case amount
-          when Integer    then integer_to_string(amount)
-          when Float      then float_to_string(amount)
-          when Rational   then rational_to_string(amount)
-          when BigDecimal then decimal_to_string(amount)
-          else raise ArgumentError.new('amount should be numeric')
-        end
+      def number_to_currency_u_n(amount, unit:, with_space:)
+        str = number_to_string(amount)
 
         min_idx = (amount < zero(amount.class)) ? 1 : 0
         # 3 chars from the end to the dot and another 3 chars to the first delimeter position
@@ -37,7 +31,32 @@ module FasterSupport
         str
       end
 
+      def number_to_currency_n_u(amount, unit:, with_space:)
+        str = number_to_string(amount)
+
+        min_idx = (amount < zero(amount.class)) ? 1 : 0
+        # 3 chars from the end to the dot and another 3 chars to the first delimeter position
+        idx = str.length - 6
+        while idx > min_idx
+          str.insert(idx, ','.freeze)
+          idx -= 3
+        end
+        str.insert(str.length, unit)
+        str.insert(str.length - unit.size, ' '.freeze) if with_space
+        str
+      end
+
     private
+
+      def number_to_string(number)
+        case number
+          when Integer    then integer_to_string(number)
+          when Float      then float_to_string(number)
+          when Rational   then rational_to_string(number)
+          when BigDecimal then decimal_to_string(number)
+          else raise ArgumentError.new('amount should be numeric')
+        end
+      end
 
       def integer_to_string(amount)
         sprintf('%d.00'.freeze, amount)

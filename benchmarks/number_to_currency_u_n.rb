@@ -11,14 +11,14 @@ decimal = BigDecimal(float.to_s)
 currency_unit = '$'
 
 Benchmark.ips do |x|
-  x.report('ActiveSupport') { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: "%u %n") }
+  x.report('ActiveSupport') { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: '%u %n') }
   x.report('FasterSupport') { FasterSupport::Numbers.number_to_currency_u_n(decimal, unit: currency_unit) }
 
   x.compare!
 end
 
 as_result = MemoryProfiler.report do
-  100.times { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: "%u %n") }
+  100.times { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: '%u %n') }
 end
 fs_result = MemoryProfiler.report do
   100.times { FasterSupport::Numbers.number_to_currency_u_n(decimal, unit: currency_unit) }
