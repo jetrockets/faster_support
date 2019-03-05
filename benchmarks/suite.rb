@@ -7,4 +7,4 @@ require 'memory_profiler'
 
 require 'terminal-table'
 
-Terminal::Table::Style.defaults = { border_top: false }
+# Terminal::Table::Style.defaults = { border_top: false }

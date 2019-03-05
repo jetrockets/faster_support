@@ -20,10 +20,6 @@ Or install it yourself as:
 
 ## Performance
 
-TODO: Write usage instructions here
-
-## Development
-
 ```
 ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n
 
@@ -39,6 +35,7 @@ Comparison:
        FasterSupport:   386647.3 i/s
        ActiveSupport:     9262.8 i/s - 41.74x  slower
 
++---------------+-----------+----------+
 | Memory        | Allocated | Retained |
 +---------------+-----------+----------+
 | ActiveSupport | 1016800   | 0        |
