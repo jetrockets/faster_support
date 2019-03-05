@@ -2,8 +2,8 @@
 
 require_relative 'suite'
 
-puts "ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n"
-puts "\nChecking for BigDecimal\n"
+puts 'ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n'.reverse_color
+puts "\nBigDecimal\n".green
 
 float = rand * 10**(rand(12)) - 50_000_000
 decimal = BigDecimal(float.to_s)
