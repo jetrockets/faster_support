@@ -43,9 +43,13 @@ Comparison:
 +---------------+-----------+----------+
 ```
 
-## Contributing
+## Credits
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/jetrockets/faster_support.
+Sponsored by [JetRockets](http://www.jetrockets.pro).
+
+![JetRockets](http://jetrockets.pro/jetrockets-white.png)
+
+Original idea by @romul and @Vankiru.
 
 ## License
 
