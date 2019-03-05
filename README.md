@@ -49,7 +49,7 @@ Sponsored by [JetRockets](http://www.jetrockets.pro).
 
 ![JetRockets](http://jetrockets.pro/jetrockets-white.png)
 
-Original idea by @romul and @Vankiru.
+Original idea by [@romul](https://github.com/romul) and [@Vankiru](https://github.com/Vankiru).
 
 ## License
 
