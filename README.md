@@ -18,6 +18,20 @@ Or install it yourself as:
 
     $ gem install faster_support
 
+## Benchmarks
+
+To run all suite of benchmarks use
+
+``` bash
+bundle exec ruby benchmarks/all.rb
+```
+
+You can also run every test separately
+
+``` bash
+bundle exec ruby benchmarks/number_to_currency/u_n_benchmark.rb
+```
+
 ## Performance
 
 ```

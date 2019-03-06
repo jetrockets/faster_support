@@ -8,12 +8,10 @@ module NumberToCurrency
       puts 'ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n'.reverse_color
 
       setup_decimal
-      profile_time
-      profile_memory
+      profile_all
 
       setup_float
-      profile_time
-      profile_memory
+      profile_all
     end
 
     def currency_unit

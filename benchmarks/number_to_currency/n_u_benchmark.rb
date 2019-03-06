@@ -1,35 +1,31 @@
 # frozen_string_literal: true
 
-require_relative 'suite'
+require_relative 'base_benchmark'
 
-puts 'ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_n_u'.reverse_color
-puts "\nBigDecimal\n".green
+module NumberToCurrency
+  class NUBenchmark < NumberToCurrency::BaseBenchmark
+    def run
+      puts 'ActiveSupport#number_to_currency VS FasterSupport#number_to_currency_u_n'.reverse_color
 
-float = rand * 10**(rand(12)) - 50_000_000
-decimal = BigDecimal(float.to_s)
+      setup_decimal
+      profile_all
 
-currency_unit = 'RUB'
+      setup_float
+      profile_all
+    end
 
-Benchmark.ips do |x|
-  x.report('ActiveSupport') { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: '%n %u') }
-  x.report('FasterSupport') { FasterSupport::Numbers.number_to_currency_n_u(decimal, unit: currency_unit) }
+    def currency_unit
+      'RUB'
+    end
 
-  x.compare!
+    def a_s_call
+      ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(number, unit: currency_unit, format: '%n %u')
+    end
+
+    def f_s_call
+      FasterSupport::Numbers.number_to_currency_n_u(number, unit: currency_unit)
+    end
+  end
 end
 
-as_result = MemoryProfiler.report do
-  100.times { ActiveSupport::NumberHelper::NumberToCurrencyConverter.convert(decimal, unit: currency_unit, format: '%n %u') }
-end
-fs_result = MemoryProfiler.report do
-  100.times { FasterSupport::Numbers.number_to_currency_n_u(decimal, unit: currency_unit) }
-end
-
-table = Terminal::Table.new do |t|
-  t.headings = ['Memory', 'Allocated', 'Retained']
-  t.rows = [
-    ['ActiveSupport', as_result.total_allocated_memsize, as_result.total_retained_memsize],
-    ['FasterSupport', fs_result.total_allocated_memsize, fs_result.total_retained_memsize]
-  ]
-end
-
-puts table
+NumberToCurrency::NUBenchmark.new.run

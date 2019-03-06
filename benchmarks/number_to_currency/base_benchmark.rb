@@ -7,16 +7,25 @@ module NumberToCurrency
     attr_reader :number
 
     def setup_decimal
-      puts "\nBigDecimal\n".green
-
       float = rand * 10**(rand(12)) - 50_000_000
       @number = BigDecimal(float.to_s)
+
+      log_number
     end
 
     def setup_float
-      puts "\nFloat\n".green
-
       @number = rand * 10**(rand(12)) - 50_000_000
+
+      log_number
+    end
+
+    def log_number
+      puts "\n#{@number.class.to_s}: #{@number}\n".green
+    end
+
+    def profile_all
+      profile_time
+      profile_memory
     end
 
     def profile_time
