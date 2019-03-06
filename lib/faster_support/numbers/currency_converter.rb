@@ -71,15 +71,19 @@ module FasterSupport
       end
 
       # format BigDecimal as string to avoid a large string allocation
-      # implicit round call, b/c of inconsistency of rounding rules in Ruby
-      # https://bugs.ruby-lang.org/issues/12548
       def decimal_to_string(amount)
-        str = amount.round(2).to_s('F')
-        # put the second zero after . if it is missing
-        if str.rindex('.'.freeze) != str.length - 3
+        str = amount.to_s('F'.freeze)
+        dot_idx = str.rindex('.'.freeze)
+        frac_length = str.length - dot_idx - 1
+
+        if frac_length == 1
+          # put the second zero after . if there is only one
           str.insert(-1, '0'.freeze)
+        elsif frac_length == 2
+          str
+        else
+          round_string(str, dot_idx)
         end
-        str
       end
 
       def rational_to_string(amount)
@@ -93,6 +97,38 @@ module FasterSupport
           frac_part = 0
         end
         sprintf('%d.%02d'.freeze, int_part, frac_part)
+      end
+
+      def round_string(str, dot_idx = nil)
+        # do round manually to support rounding as in ActiveSupport
+        # b/c of inconsistency of rounding rules in Ruby https://bugs.ruby-lang.org/issues/12548
+        dot_idx ||= str.rindex('.'.freeze)
+        if str.getbyte(dot_idx+3) >= 53 # '5'
+          idx = dot_idx + 2
+          while true do
+            if idx < 0
+              str.insert(0, '1'.freeze)
+              dot_idx += 1
+              break
+            end
+            code = str.getbyte(idx)
+            case code
+            when 57 # '9'
+              str.setbyte(idx, 48) # '0'
+              idx -= 1
+            when 46 # '.'
+              idx -= 1
+            when 45 # '-'
+              str.insert(1, '1'.freeze)
+              dot_idx += 1
+              break
+            else
+              str.setbyte(idx, code+1)
+              break
+            end
+          end
+        end
+        str[0, dot_idx+3]
       end
 
       def zero(klass)
