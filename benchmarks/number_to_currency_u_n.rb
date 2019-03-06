@@ -51,6 +51,9 @@ class NumberToCurrencyUNBenchmark
       ]
     end
 
+    table.align_column(1, :right)
+    table.align_column(2, :right)
+
     puts table
   end
 end
