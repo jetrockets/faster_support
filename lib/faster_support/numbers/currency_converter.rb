@@ -74,7 +74,7 @@ module FasterSupport
       # implicit round call, b/c of inconsistency of rounding rules in Ruby
       # https://bugs.ruby-lang.org/issues/12548
       def decimal_to_string(amount)
-        str = amount.round(2).to_s
+        str = amount.round(2).to_s('F')
         # put the second zero after . if it is missing
         if str.rindex('.'.freeze) != str.length - 3
           str.insert(-1, '0'.freeze)
