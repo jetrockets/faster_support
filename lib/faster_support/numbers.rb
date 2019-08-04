@@ -14,7 +14,7 @@ module FasterSupport
         CurrencyConverter.instance.number_to_currency_n_u(amount, unit: unit, with_space: with_space)
       end
 
-      def number_to_delimited(number, options)
+      def number_to_delimited(number, options = {})
         DelimitedConverter.instance.convert(number, options)
       end
     end
