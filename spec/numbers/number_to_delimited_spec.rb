@@ -4,262 +4,139 @@ require 'spec_helper'
 require 'active_support/all'
 
 RSpec.describe "FasterSupport::Numbers.number_to_delimited" do
-  let(:faster_support) do
-    FasterSupport::Numbers.number_to_delimited(number, options)
-  end
-
-  let(:active_support) do
-    ActiveSupport::NumberHelper.number_to_delimited(number, options)
-  end
-
-  let(:options) { {} }
-
-  context "when a number is passed" do
-    context "with less than 3 digits in its integer part" do
-      let(:number) { 0 }
-
-      it "returns a string " do
-        expect(faster_support).to eq("0")
+  describe "number" do
+    context "when a number is passed" do
+      context "with less than 3 digits in its integer part" do
+        it do
+          expect(:number_to_delimited).to convert(0).to("0")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "with 3 digits in its integer part" do
-      let(:number) { 123 }
-
-      it "" do
-        expect(faster_support).to eq("123")
+      context "with 3 digits in its integer part" do
+        it do
+          expect(:number_to_delimited).to convert(123).to("123")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "with the number of digits in its integer part that is devisible by 3" do
-      let(:number) { 123_456 }
-
-      it "" do
-        expect(faster_support).to eq("123,456")
+      context "with the number of digits in its integer part that is devisible by 3" do
+        it do
+          expect(:number_to_delimited).to convert(123_456).to("123,456")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "with the number of digits in its integer part that is not devisible by 3" do
-      let(:number) { 12_345_678 }
-
-      it "" do
-        expect(faster_support).to eq("12,345,678")
+      context "with the number of digits in its integer part that is not devisible by 3" do
+        it do
+          expect(:number_to_delimited).to convert(12_345_678).to("12,345,678")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "with less than 3 digits in its fractional part" do
-      let(:number) { 123_456.78 }
-
-      it "" do
-        expect(faster_support).to eq("123,456.78")
+      context "with less than 3 digits in its fractional part" do
+        it do
+          expect(:number_to_delimited).to convert(123_456.78).to("123,456.78")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+      context "with 3 digits in its fractional part" do
+        it do
+          expect(:number_to_delimited).to convert(123_456.789).to("123,456.789")
+        end
+      end
+
+      context "with the number of digits in its fractional part that is devisible by 3" do
+        it do
+          expect(:number_to_delimited).to convert(123_456.789012).to("123,456.789012")
+        end
+      end
+
+      context "with the number of digits in its fractional part that is not devisible by 3" do
+        it do
+          expect(:number_to_delimited).to convert(123_456_789.78901).to("123,456,789.78901")
+        end
+      end
+
+      context "with only fractional part" do
+        it do
+          expect(:number_to_delimited).to convert(0.78901).to("0.78901")
+        end
+      end
+
+      context "that is negative" do
+        it do
+          expect(:number_to_delimited).to convert(-123_456).to("-123,456")
+        end
       end
     end
 
-    context "with 3 digits in its fractional part" do
-      let(:number) { 123_456.789 }
-
-      it "" do
-        expect(faster_support).to eq("123,456.789")
+    context "when a string is passed to" do
+      context "which contains a positive number" do
+        it do
+          expect(:number_to_delimited).to convert("123456.78").to("123,456.78")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "with the number of digits in its fractional part that is devisible by 3" do
-      let(:number) { 123_456.789012 }
-
-      it "" do
-        expect(faster_support).to eq("123,456.789012")
+      context "which contains a negative number" do
+        it do
+          expect(:number_to_delimited).to convert("-123456.78").to("-123,456.78")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "with the number of digits in its fractional part that is not devisible by 3" do
-      let(:number) { 123_456_789.78901 }
-
-      it "" do
-        expect(faster_support).to eq("123,456,789.78901")
+      context "which is html safe" do
+        it do
+          expect(:number_to_delimited).to convert("123456.78".html_safe).to("123,456.78")
+        end
       end
 
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+      context "which contains no numbers" do
+        it do
+          expect(:number_to_delimited).to convert("This string does not contain any numbers")
+                                            .to("This string does not contain any numbers")
+        end
       end
     end
 
-    context "with only fractional part" do
-      let(:number) { 0.78901 }
-
-      it "" do
-        expect(faster_support).to eq("0.78901")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+    context "when nil is passed to" do
+      it do
+        expect(:number_to_delimited).to convert(nil).to(nil)
       end
     end
 
-    context "that is negative" do
-      let(:number) { -123_456 }
-
-      it "" do
-        expect(faster_support).to eq("-123,456")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+    context "when an object that is not number or string is passed to" do
+      it do
+        expect(:number_to_delimited).to convert([1, 2, 3]).to([1, 2, 3])
       end
     end
   end
 
-  context "when a string passed to" do
-    context "that contains a positive number" do
-      let(:number) { "123456.78" }
-
-      it "" do
-        expect(faster_support).to eq("123,456.78")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+  describe "options" do
+    context "when options contain :delimiter_pattern" do
+      pending do
+        expect(:number_to_delimited).to convert(123_456.78)
+                                          .with_options(delimiter_pattern: /(\d+?)(?=(\d\d)+(\d)(?!\d))/)
+                                          .to("1,23,456.78")
       end
     end
 
-    context "that contains a negative number" do
-      let(:number) { "-123456.78" }
-
-      it "" do
-        expect(faster_support).to eq("-123,456.78")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+    context "when options contain :delimiter" do
+      it do
+        expect(:number_to_delimited).to convert(12_345_678)
+                                          .with_options(delimiter: " ")
+                                          .to("12 345 678")
       end
     end
 
-    context "that is html safe" do
-      let(:number) { "123456.78".html_safe }
-
-      it "" do
-        expect(faster_support).to eq("123,456.78")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+    context "when options contain :separator" do
+      it do
+        expect(:number_to_delimited).to convert(12_345_678.05)
+                                          .with_options(separator: "-")
+                                          .to("12,345,678-05")
       end
     end
 
-    context "that contains no numbers" do
-      let(:number) { "This string does not contain any numbers" }
-
-      it "" do
-        expect(faster_support).to eq("This string does not contain any numbers")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-  end
-
-  context "when nil is passed to" do
-    let(:number) { nil }
-
-    it "returns nil" do
-      expect(faster_support).to eq(nil)
-    end
-
-    it "returns the same value as ActiveSupport" do
-      expect(faster_support).to eq(active_support)
-    end
-  end
-
-  context "when an object that is not number or string is passed to" do
-    let(:number) { [1, 2, 3] }
-
-    it "returns the object that has been passed to" do
-      expect(faster_support).to eq([1, 2, 3])
-    end
-
-    it "returns the same value as ActiveSupport" do
-      expect(faster_support).to eq(active_support)
-    end
-  end
-
-  context "when options are passed to" do
-    context "that contain :delimiter_pattern" do
-      let(:number) { 123_456.78 }
-      let(:options) { { delimiter_pattern: /(\d+?)(?=(\d\d)+(\d)(?!\d))/ } }
-
-      pending "" do
-        expect(faster_support).to eq("1,23,456.78")
-      end
-
-      pending "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "that contain :delimiter" do
-      let(:number) { 12_345_678 }
-      let(:options) { { delimiter: " " } }
-
-      it "" do
-        expect(faster_support).to eq("12 345 678")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "that contain :separator" do
-      let(:number) { 12_345_678.05 }
-      let(:options) { { separator: "-" } }
-
-      it "" do
-        expect(faster_support).to eq("12,345,678-05")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
-      end
-    end
-
-    context "that contain both :separator and :delimiter" do
-      let(:number) { 12_345_678.05 }
-      let(:options) { { separator: ",", delimiter: "." } }
-
-      it "" do
-        expect(faster_support).to eq("12.345.678,05")
-      end
-
-      it "returns the same value as ActiveSupport" do
-        expect(faster_support).to eq(active_support)
+    context "when options contain both :separator and :delimiter" do
+      it do
+        expect(:number_to_delimited).to convert(12_345_678.05)
+                                          .with_options(separator: ",", delimiter: ".")
+                                          .to("12.345.678,05")
       end
     end
   end

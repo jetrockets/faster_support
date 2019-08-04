@@ -3,13 +3,16 @@
 module FasterSupport
   module Numbers
     class BaseConverter
-      OPTIONS = %i(
-        separator
-        delimiter
-      ).freeze
-
       def self.instance
         @instance ||= new
+      end
+
+      def self.namespace=(value)
+        @namespace = value
+      end
+
+      def self.namespace
+        @namespace
       end
 
       def convert(number, options = {})
@@ -18,11 +21,11 @@ module FasterSupport
         #end
         return number unless number?(number)
 
-        if dup?(number, options)
+        if number.is_a?(String)
           number = number.dup
         end
 
-        _convert(number, options)
+        _convert(number, Options.new(options, self.class.namespace))
       end
 
       private
@@ -31,17 +34,6 @@ module FasterSupport
         Float(number)
       rescue ArgumentError, TypeError
         false
-      end
-
-      def dup?(number, options)
-        #number.is_a?(String) && (!options[:dup] || number.frozen?)
-        number.is_a?(String)
-      end
-
-      OPTIONS.each do |option|
-        define_method option do |options|
-          options[option] || self.class::DEFAULTS[option]
-        end
       end
     end
   end

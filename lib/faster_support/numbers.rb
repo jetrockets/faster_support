@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require 'faster_support/numbers/options'
+
 require 'faster_support/numbers/currency_converter'
+
 require 'faster_support/numbers/delimited_converter'
+require 'faster_support/numbers/rounded_converter'
 
 module FasterSupport
   module Numbers
@@ -16,6 +20,10 @@ module FasterSupport
 
       def number_to_delimited(number, options = {})
         DelimitedConverter.instance.convert(number, options)
+      end
+
+      def number_to_rounded(number, options = {})
+        RoundedConverter.instance.convert(number, options)
       end
     end
   end

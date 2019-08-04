@@ -5,14 +5,11 @@ require 'faster_support/numbers/base_converter'
 module FasterSupport
   module Numbers
     class DelimitedConverter < BaseConverter
-      DEFAULTS = {
-        separator: ".",
-        delimiter: ","
-      }
+      self.namespace = :delimited
 
       def _convert(number, options)
         string = to_string(number, options)
-        string = delimitize(string, options)
+        string = to_delimited(string, options)
 
         string
       end
@@ -25,18 +22,18 @@ module FasterSupport
         dot_index = string.rindex(".")
 
         if dot_index
-          string[dot_index] = separator(options)
+          string[dot_index] = options[:separator]
         end
 
         string
       end
 
-      def delimitize(string, options)
+      def to_delimited(string, options)
         first_digit_index = negative?(string) ? 1 : 0
-        index = first_delimiter_position(string, options)
+        index = first_delimiter_index(string, options)
 
         while first_digit_index < index do
-          string.insert(index, delimiter(options))
+          string.insert(index, options[:delimiter])
           index -= 3
         end
 
@@ -44,11 +41,11 @@ module FasterSupport
       end
 
       def negative?(string)
-        string.rindex("-", -string.size) == 0
+        string.getbyte(0) == 45 # -
       end
 
-      def first_delimiter_position(string, options)
-        (string.rindex(separator(options)) || string.size) - 3
+      def first_delimiter_index(string, options)
+        (string.rindex(options[:separator]) || string.size) - 3
       end
     end
   end
