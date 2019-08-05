@@ -91,6 +91,9 @@ module FasterSupport
 
         string
       end
+
+      def precision(options)
+      end
     end
   end
 end
