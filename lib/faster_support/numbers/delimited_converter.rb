@@ -44,7 +44,7 @@ module FasterSupport
       end
 
       def negative?(string)
-        string.rindex("-", -string.size) == 0
+        string.getbyte(0) == 45 # -
       end
 
       def first_delimiter_position(string, options)

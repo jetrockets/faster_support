@@ -6,6 +6,9 @@ module FasterSupport
       OPTIONS = %i(
         separator
         delimiter
+        precision
+        significant
+        strip_insignificant_zeros
       ).freeze
 
       def self.instance

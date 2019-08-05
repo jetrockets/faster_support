@@ -9,48 +9,38 @@ RSpec.describe "FasterSupport::Numbers.number_to_rounded" do
   describe "number" do
     context "when a number is passed" do
       context "which is positive" do
-        it do
-          expect(:number_to_rounded).to convert(111.2346).to("111.235")
+        it { expect(:number_to_rounded).to convert(111.2346).to("111.235") }
         end
       end
 
       context "which is negative" do
-        it do
-          expect(:number_to_rounded).to convert(111.2346).to("-111.235")
-        end
+        it { expect(:number_to_rounded).to convert(111.2346).to("-111.235") }
       end
     end
 
     context "when a string is passed to" do
       context "which represents a positive number" do
-        it do
-          expect(:number_to_rounded).to convert("111.2346").to("111.235")
-        end
+        it { expect(:number_to_rounded).to convert("111.2346").to("111.235") }
       end
 
       context "which represents a negative number" do
-        it do
-          expect(:number_to_rounded).to convert("-111.2346").to("-111.235")
-        end
+        it { expect(:number_to_rounded).to convert("-111.2346").to("-111.235") }
       end
 
       context "which contains no numbers" do
         it do
-          expect(:number_to_rounded).to convert("This string does not contain any numbers").to("This string does not contain any numbers")
+          expect(:number_to_rounded).to convert("This string does not contain any numbers")
+                                          .to("This string does not contain any numbers")
         end
       end
     end
 
     context "when nil is passed to" do
-      it do
-        expect(:number_to_rounded).to convert(nil).to(nil)
-      end
+      it { expect(:number_to_rounded).to convert(nil).to(nil) }
     end
 
     context "when an object that is not number or string is passed to" do
-      it do
-        expect(:number_to_rounded).to convert([1, 2, 3]).to([1, 2, 3])
-      end
+      it { expect(:number_to_rounded).to convert([1, 2, 3]).to([1, 2, 3]) }
     end
   end
 
