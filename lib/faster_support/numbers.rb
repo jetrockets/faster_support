@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'faster_support/numbers/options'
+
 require 'faster_support/numbers/currency_converter'
 
 require 'faster_support/numbers/delimited_converter'

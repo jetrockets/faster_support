@@ -10,7 +10,6 @@ RSpec.describe "FasterSupport::Numbers.number_to_rounded" do
     context "when a number is passed" do
       context "which is positive" do
         it { expect(:number_to_rounded).to convert(111.2346).to("111.235") }
-        end
       end
 
       context "which is negative" do
@@ -178,7 +177,7 @@ RSpec.describe "FasterSupport::Numbers.number_to_rounded" do
         it do
           expect(:number_to_rounded).to convert("111.2346")
                                           .with_options(precision: 100)
-                                          .to("0")
+                                          .to("111.2346000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
         end
       end
 
@@ -436,7 +435,7 @@ RSpec.describe "FasterSupport::Numbers.number_to_rounded" do
         it do
           expect(:number_to_rounded).to convert("9775")
                                           .with_options(precision: 100, significant: true)
-                                          .to("0")
+                                          .to("9775.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
         end
       end
 

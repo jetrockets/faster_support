@@ -11,18 +11,19 @@ require 'faster_support/numbers/rounded_converter/decimal_rounder'
 module FasterSupport
   module Numbers
     class RoundedConverter < BaseConverter
-      DEFAULTS = {
-        delimiter: ""
-      }
+      self.namespace = :rounded
 
       def _convert(number, options)
         string = to_string(number, options)
+        string = to_delimited(string, options)
+
+        string
       end
 
       private
 
       def to_string(number, options)
-        if number.is_a?(string)
+        if number.is_a?(String)
           number = BigDecimal(number)
         end
 
@@ -36,6 +37,10 @@ module FasterSupport
         when Rational   then RationalRounder
         when BigDecimal then DecimalRounder
         end
+      end
+
+      def to_delimited(string, options)
+        DelimitedConverter.instance._convert(string, options)
       end
     end
   end
