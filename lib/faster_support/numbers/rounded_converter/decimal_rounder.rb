@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
+require 'faster_support/numbers/rounded_converter/base_rounder'
+
 module FasterSupport
   module Numbers
-    class RoundedConverter
+    class RoundedConverter < BaseConverter
       class DecimalRounder < BaseRounder
-        def convert(number, options)
+        private
+
+        def truncate(number, precision)
           number.round(precision)
         end
 
@@ -19,4 +23,3 @@ module FasterSupport
     end
   end
 end
-

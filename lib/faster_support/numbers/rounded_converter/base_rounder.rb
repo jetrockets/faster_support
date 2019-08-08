@@ -2,15 +2,21 @@
 
 module FasterSupport
   module Numbers
-    class RoundedConverter
+    class RoundedConverter < BaseConverter
       class BaseRounder
+        def self.instance
+          @instance ||= new
+        end
+
         def convert(number, options)
           precision = precision(number, options)
 
           number = truncate(number, precision)
-
           string = to_string(number, precision)
-          string = add_trailing_zeros(string, precision)
+
+          unless options[:strip_insignificant_zeros]
+            string = add_trailing_zeros(string, precision)
+          end
 
           string
         end
@@ -18,30 +24,41 @@ module FasterSupport
         private
 
         def precision(number, options)
-          if significant(number, options)
-            precision(options) - integer_digits_count(number)
+          if options[:significant]
+            options[:precision] - integer_part_size(number)
           else
-            precision(options)
+            options[:precision]
           end
         end
 
-        def integer_digits_count(number)
+        def integer_part_size(number)
           return 1 if number.zero?
 
-          (Math.log10(number.abs) + 1).floor
+          Math.log10(number.to_i.abs).floor + 1
         end
 
         def add_trailing_zeros(string, precision)
-          dot_index = string.rindex(".")
+          return string if precision <= 0
 
-          fraction_size = string.size - dot_index - 1
-          zeros_to_add = precision - fraction_size
-
-          zeros_to_add.times do
+          zeros_to_add(string, precision).times do
             string.insert(-1, "0")
           end
 
           string
+        end
+
+        def zeros_to_add(string, precision)
+          precision - string.size + dot_index(string) + 1
+        end
+
+        def dot_index(string)
+          dot_index = string.rindex(".")
+
+          unless dot_index
+            string.insert(-1, ".")
+          end
+
+          dot_index || (string.size - 2)
         end
       end
     end

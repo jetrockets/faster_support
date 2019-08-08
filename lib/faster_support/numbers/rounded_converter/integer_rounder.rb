@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require 'faster_support/numbers/rounded_converter/base_rounder'
+
 module FasterSupport
   module Numbers
-    class RoundedConverter
+    class RoundedConverter < BaseConverter
       class IntegerRounder < BaseRounder
         private
 
