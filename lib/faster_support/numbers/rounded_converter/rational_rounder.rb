@@ -54,6 +54,10 @@ module FasterSupport
           string
         end
 
+        def adjust(number, precision, options)
+          precision
+        end
+
         def to_string(number, percision)
           String(number)
         end

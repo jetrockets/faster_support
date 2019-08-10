@@ -17,6 +17,10 @@ module FasterSupport
         # integer part, because in this case
         # Float#round returns an incorrect value.
         def to_string(number, precision)
+          if number.zero?
+            return String(number.to_i)
+          end
+
           String(number)
           #sprintf(""%.#{precision}f", number)
         end

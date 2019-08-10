@@ -12,6 +12,8 @@ module FasterSupport
           precision = precision(number, options)
 
           number = truncate(number, precision)
+          precision = adjust(number, precision, options)
+
           string = to_string(number, precision)
 
           unless options[:strip_insignificant_zeros]
@@ -24,6 +26,8 @@ module FasterSupport
         private
 
         def precision(number, options)
+          return 0 if options[:precision] == 0
+
           if options[:significant]
             options[:precision] - integer_part_size(number)
           else
@@ -34,7 +38,20 @@ module FasterSupport
         def integer_part_size(number)
           return 1 if number.zero?
 
-          Math.log10(number.to_i.abs).floor + 1
+          Math.log10(number.abs).floor + 1
+        end
+
+        def adjust(number, precision, options)
+          return precision unless options[:significant]
+          return precision if precision <= 0
+
+          digits_count = integer_part_size(number.to_i)
+
+          if digits_count + precision == options[:precision] + 1
+            precision - 1
+          else
+            precision
+          end
         end
 
         def add_trailing_zeros(string, precision)

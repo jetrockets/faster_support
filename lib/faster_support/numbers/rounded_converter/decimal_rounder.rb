@@ -13,8 +13,12 @@ module FasterSupport
         end
 
         def to_string(number, precision)
+          if number.zero?
+            return String(number.to_i)
+          end
+
           if precision > 0
-            number.to_s("F")
+            string = number.to_s("F")
           else
             number.to_i.to_s
           end
