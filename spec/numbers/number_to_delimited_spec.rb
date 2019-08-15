@@ -3,8 +3,6 @@
 require 'spec_helper'
 require 'active_support/all'
 
-require 'matchers/converter_matcher'
-
 RSpec.describe "FasterSupport::Numbers.number_to_delimited" do
   describe "number" do
     context "when a number is passed" do

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'active_support/all'
-
-require 'matchers/converter_matcher'
+require "spec_helper"
+require "active_support/all"
 
 #RSpec.describe "FasterSupport::Numbers.number_to_rounded" do
 RSpec.describe :number_to_rounded do
   describe "number" do
     context "when a number is passed" do
       context "which is positive" do
+        it { is_expected.to convert(111.2346).to("111.235") }
+
         it { is_expected.to convert(111.2346).to("111.235") }
       end
 
@@ -59,30 +59,12 @@ RSpec.describe :number_to_rounded do
                           .to("123")
         end
 
-        [
-          Float
-          Rational
-          Decimal
-          String
-        ].each do |type|
-          it do
-            is_expected.to convert(123.45)
-                            .with_options(precision: 0)
-                            .to("123")
-          end
-
-          it do
-            is_expected.to convert(123.54)
-                            .with_options(precision: 0)
-                            .to("124")
-          end
-
-          it do
-            is_expected.to convert(-123.45)
-                            .with_options(precision: 0)
-                            .to("-123")
-          end
+        it do
+          is_expected.to convert_for_each_type(123.45)
+                          .with_options(precision: 0)
+                          .to("123")
         end
+
         it do
           is_expected.to convert(123.54)
                           .with_options(precision: 0)
@@ -99,6 +81,12 @@ RSpec.describe :number_to_rounded do
           is_expected.to convert(-123.45)
                           .with_options(precision: 0)
                           .to("-123")
+        end
+
+        it do
+          is_expected.to convert(-123.54)
+                          .with_options(precision: 0)
+                          .to("-124")
         end
 
         it do
