@@ -5,30 +5,42 @@ require "active_support/all"
 
 RSpec.describe :number_to_rounded do
   describe "number" do
-    context "when a number is passed" do
-      context "which is positive" do
-        it { is_expected.to convert(111.2346).to("111.235") }
-      end
+    context "when an Integer number is passed" do
+      it { is_expected.to convert(123).to("123.000") }
 
-      context "which is negative" do
-        it { is_expected.to convert(-111.2346).to("-111.235") }
-      end
+      it { is_expected.to convert(123).to("123.000") }
+    end
+
+    context "when a Float number is passed" do
+      it { is_expected.to convert(123.45).to("123.450") }
+
+      it { is_expected.to convert(-123.45).to("-123.450") }
+    end
+
+    context "when a Rational number is passed" do
+      it { is_expected.to convert(Rational(12345, 100)).to("123.450") }
+
+      it { is_expected.to convert(Rational(-12345, 100)).to("-123.450") }
+    end
+
+    context "when a BigDecimal number is passed" do
+      it { is_expected.to convert(BigDecimal(123.45, Float::DIG)).to("123.450") }
+
+      it { is_expected.to convert(BigDecimal(123.45, Float::DIG)).to("-123.450") }
     end
 
     context "when a string is passed to" do
-      context "which represents a positive number" do
-        it { is_expected.to convert("111.2346").to("111.235") }
-      end
+      it { is_expected.to convert("123.45").to("123.450") }
 
-      context "which represents a negative number" do
-        it { is_expected.to convert("-111.2346").to("-111.235") }
-      end
+      it { is_expected.to convert("-123.45").to("-123.450") }
 
-      context "which contains no numbers" do
-        it do
-          is_expected.to convert("This string does not contain any numbers")
-                          .to("This string does not contain any numbers")
-        end
+      it { is_expected.to convert("0.12345e3").to("123.450") }
+
+      it { is_expected.to convert("-0.12345e3").to("-123.450") }
+
+      it do
+        is_expected.to convert("This string does not contain any numbers")
+                        .to("This string does not contain any numbers")
       end
     end
 
@@ -66,18 +78,6 @@ RSpec.describe :number_to_rounded do
           is_expected.to convert_as_fractional(9.9994)
                           .with_options(precision: 4)
                           .to("9.9994")
-        end
-
-        it do
-          is_expected.to convert_as_integer(-123)
-                          .with_options(precision: 0)
-                          .to("-123")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.45)
-                          .with_options(precision: 2)
-                          .to("-123.45")
         end
       end
 
@@ -125,18 +125,6 @@ RSpec.describe :number_to_rounded do
         end
 
         it do
-          is_expected.to convert_as_fractional(-123.0)
-                          .with_options(precision: 0)
-                          .to("-123")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.454)
-                          .with_options(precision: 2)
-                          .to("-123.45")
-        end
-
-        it do
           is_expected.to convert_as_fractional(-0.0001)
                           .with_options(precision: 3)
                           .to("0.000")
@@ -173,23 +161,11 @@ RSpec.describe :number_to_rounded do
                           .with_options(precision: 50)
                           .to("9.99994000000000000000000000000000000000000000000000")
         end
-
-        it do
-          is_expected.to convert_as_fractional(-123)
-                          .with_options(precision: 2)
-                          .to("-123.00")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.45)
-                          .with_options(precision: 5)
-                          .to("-123.45000")
-        end
       end
     end
 
     context "when options contain significant" do
-      context "and options[:precision] is equal to the number of significant digits" do
+      context "and the number contains options[:precision] significant digits" do
         it do
           is_expected.to convert_as_integer(123)
                           .with_options(precision: 3, significant: true)
@@ -213,33 +189,9 @@ RSpec.describe :number_to_rounded do
                           .with_options(precision: 3, significant: true)
                           .to("0.00123")
         end
-
-        it do
-          is_expected.to convert_as_integer(-123)
-                          .with_options(precision: 3, significant: true)
-                          .to("-123")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.45)
-                          .with_options(precision: 5, significant: true)
-                          .to("-123.45")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-0.0001)
-                          .with_options(precision: 1, significant: true)
-                          .to("-0.0001")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-0.00123)
-                          .with_options(precision: 3, significant: true)
-                          .to("-0.00123")
-        end
       end
 
-      context "and options[:precision] is less than the number of significant digits" do
+      context "and the number contains more than options[:precision] significant digits" do
         it do
           is_expected.to convert_as_integer(23456)
                           .with_options(precision: 2, significant: true)
@@ -347,45 +299,9 @@ RSpec.describe :number_to_rounded do
                           .with_options(precision: 0, significant: true)
                           .to("124")
         end
-
-        it do
-          is_expected.to convert_as_integer(-23456)
-                          .with_options(precision: 2, significant: true)
-                          .to("-23000")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.45)
-                          .with_options(precision: 3, significant: true)
-                          .to("-123")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.45)
-                          .with_options(precision: 4, significant: true)
-                          .to("-123.5")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-0.0012345)
-                          .with_options(precision: 3, significant: true)
-                          .to("-0.00123")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-0.0015432)
-                          .with_options(precision: 1, significant: true)
-                      .to("-0.002")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-123.45)
-                          .with_options(precision: 0, significant: true)
-                          .to("-123")
-        end
       end
 
-      context "and options[:precision] is greater than the number of significant digits" do
+      context "and the number contains less than options[:precision] significant digits" do
         it do
           is_expected.to convert_as_integer(0)
                           .with_options(precision: 2, significant: true)
@@ -399,13 +315,13 @@ RSpec.describe :number_to_rounded do
         end
 
         it do
-          is_expected.to convert(123.45)
+          is_expected.to convert_as_fractional(123.45)
                           .with_options(precision: 7, significant: true)
                           .to("123.4500")
         end
 
         it do
-          is_expected.to convert(0.0001)
+          is_expected.to convert_as_fractional(0.0001)
                           .with_options(precision: 3, significant: true)
                           .to("0.000100")
         end
@@ -415,72 +331,112 @@ RSpec.describe :number_to_rounded do
                           .with_options(precision: 20, significant: true)
                           .to("9.9999400000000000000")
         end
-
-        it do
-          is_expected.to convert_as_integer(-1234)
-                          .with_options(precision: 6, significant: true)
-                          .to("-1234.00")
-        end
-
-        it do
-          is_expected.to convert(-123.45)
-                          .with_options(precision: 7, significant: true)
-                          .to("-123.4500")
-        end
-
-        it do
-          is_expected.to convert(-0.0001)
-                          .with_options(precision: 3, significant: true)
-                          .to("-0.000100")
-        end
-
-        it do
-          is_expected.to convert_as_fractional(-9.99994)
-                          .with_options(precision: 20, significant: true)
-                          .to("-9.9999400000000000000")
-        end
       end
     end
 
     context "when options[:strip_insignificant_zeros] = true" do
-      it do
-        is_expected.to convert(9775.43)
-                        .with_options(precision: 4, strip_insignificant_zeros: true)
-                        .to("9775.43")
+      context "and there is no insignificant zeros in the fractional part" do
+        it do
+          is_expected.to convert_as_integer(123)
+                          .with_options(precision: 0, strip_insignificant_zeros: true)
+                          .to("123")
+        end
+
+        it do
+          is_expected.to convert_as_fractional(123.45)
+                          .with_options(precision: 2, strip_insignificant_zeros: true)
+                          .to("123.45")
+        end
+
+        it do
+          is_expected.to convert_as_fractional(123.45)
+                          .with_options(precision: 5, significant: true, strip_insignificant_zeros: true)
+                          .to("123.45")
+        end
       end
 
-      it do
-        is_expected.to convert(9775.2)
-                        .with_options(precision: 6, significant: true, strip_insignificant_zeros: true)
-                        .to("9775.2")
-      end
+      context "and there is insignificant zeros in the fractional part" do
+        it do
+          is_expected.to convert_as_integer(123)
+                          .with_options(precision: 2, strip_insignificant_zeros: true)
+                          .to("123")
+        end
 
-      it do
-        is_expected.to convert(0)
-                        .with_options(precision: 6, significant: true, strip_insignificant_zeros: true)
-                        .to("0")
+        it do
+          is_expected.to convert_as_fractional(123.45)
+                          .with_options(precision: 6, strip_insignificant_zeros: true)
+                          .to("123.45")
+        end
+
+        it do
+          is_expected.to convert_as_fractional(123.45)
+                          .with_options(precision: 7, significant: true, strip_insignificant_zeros: true)
+                          .to("123.45")
+        end
       end
     end
 
     context "when options contain :separator" do
       it do
-        is_expected.to convert(1231.825)
-                        .with_options(precision: 2, separator: ",", delimiter: ".")
-                        .to("1.231,83")
+        is_expected.to convert_as_integer(123)
+                        .with_options(precision: 0, separator: ",")
+                        .to("123")
       end
 
       it do
-        is_expected.to convert(31.825)
+        is_expected.to convert_as_integer(123)
                         .with_options(precision: 2, separator: ",")
-                        .to("31,83")
+                        .to("123,00")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(123.45)
+                        .with_options(precision: 0, separator: ",")
+                        .to("123")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(123.45)
+                        .with_options(precision: 2, separator: ",")
+                        .to("123,45")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(12_345_678.9)
+                        .with_options(precision: 1, separator: ",", delimiter: ".")
+                        .to("12.345.678,9")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(12_345_678.9)
+                        .with_options(precision: 1, separator: ".", delimiter: ".")
+                        .to("12.345.678.9")
       end
     end
 
     context "when options contain :delimeter" do
       it do
-        is_expected.to convert(1231.825)
-                        .with_options(precision: 2, separator: ",", delimiter: ".")
-                        .to("1.231,83")
+        is_expected.to convert_as_fractional(123.45)
+                        .with_options(precision: 2, delimiter: ",")
+                        .to("123.45")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(123_456.78)
+                        .with_options(precision: 2, delimiter: ",")
+                        .to("123,456.78")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(12_345_678.9)
+                        .with_options(precision: 1, delimiter: ",")
+                        .to("12,345,678.9")
+      end
+
+      it do
+        is_expected.to convert_as_fractional(12_345_678.9)
+                        .with_options(precision: 1, separator: ".", delimiter: ".")
+                        .to("12.345.678.9")
       end
     end
   end
