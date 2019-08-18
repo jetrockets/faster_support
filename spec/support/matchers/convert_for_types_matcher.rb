@@ -2,18 +2,11 @@
 
 module FasterSupport
   module Matchers
-    class ConvertForEachTypeMatcher
-      TYPES = [
-        Float,
-        Rational,
-        BigDecimal,
-        String
-      ]
+    class ConvertForTypesMatcher
+      attr_reader :number, :converter, :options, :value, :types
 
-      attr_reader :number, :converter, :options, :value
-
-      def initialize(number, options = {}, to = nil)
-        @number = number; @options = options; @value = to
+      def initialize(number, types)
+        @number = number; @types = types
       end
 
       def with_converter(converter)
@@ -49,7 +42,7 @@ module FasterSupport
       private
 
       def matchers
-        @matchers ||= TYPES.map do |type|
+        @matchers ||= types.map do |type|
           ConvertMatcher.new(to_type(type), options, value)
         end
       end
