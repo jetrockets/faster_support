@@ -13,15 +13,16 @@ module FasterSupport
         end
 
         # It works incorrect with float numbers
-        # that have more than 15 digits of its
-        # integer part, because in this case
+        # that have more than Float::DIG digits in 
+        # its integer part, because in this case
         # Float#round returns an incorrect value.
         def to_string(number, precision)
-          if number.zero?
-            return String(number.to_i)
+          if number.zero? || precision <= 0
+            String(number.to_i)
+          else
+            String(number)
           end
 
-          String(number)
           #sprintf(""%.#{precision}f", number)
         end
       end

@@ -30,7 +30,7 @@ module FasterSupport
 
       def to_delimited(string, options)
         first_digit_index = negative?(string) ? 1 : 0
-        index = first_delimiter_position(string, options)
+        index = first_delimiter_index(string, options)
 
         while first_digit_index < index do
           string.insert(index, options[:delimiter])
@@ -44,7 +44,7 @@ module FasterSupport
         string.getbyte(0) == 45 # -
       end
 
-      def first_delimiter_position(string, options)
+      def first_delimiter_index(string, options)
         (string.rindex(options[:separator]) || string.size) - 3
       end
     end

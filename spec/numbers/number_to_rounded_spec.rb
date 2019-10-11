@@ -26,7 +26,7 @@ RSpec.describe :number_to_rounded do
     context "when a BigDecimal number is passed" do
       it { is_expected.to convert(BigDecimal(123.45, Float::DIG)).to("123.450") }
 
-      it { is_expected.to convert(BigDecimal(123.45, Float::DIG)).to("-123.450") }
+      it { is_expected.to convert(BigDecimal(-123.45, Float::DIG)).to("-123.450") }
     end
 
     context "when a string is passed to" do
@@ -153,7 +153,7 @@ RSpec.describe :number_to_rounded do
         it do
           is_expected.to convert_as_fractional(0.0001)
                           .with_options(precision: 10)
-                          .to("0.000100000")
+                          .to("0.0001000000")
         end
 
         it do

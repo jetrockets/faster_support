@@ -39,7 +39,7 @@ module FasterSupport
       }
 
       def initialize(options, namespace)
-        @options = options; @namespace = namespace
+        @options = options || {}; @namespace = namespace
       end
 
       def [](key)

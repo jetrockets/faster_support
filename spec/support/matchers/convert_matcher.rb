@@ -10,7 +10,7 @@ module FasterSupport
       end
 
       def with_converter(converter)
-        @converter = converter
+        @converter = converter; self
       end
 
       def with_options(options)
@@ -26,7 +26,7 @@ module FasterSupport
       end
 
       def description
-        "returns the same value as ActiveSupport"
+        "return the same value as ActiveSupport"
       end
 
       def failure_message

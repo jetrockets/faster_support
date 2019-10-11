@@ -3,7 +3,6 @@
 require 'faster_support/numbers/base_converter'
 
 require 'faster_support/numbers/rounded_converter/integer_rounder'
-require 'faster_support/numbers/rounded_converter/integer_rounder'
 require 'faster_support/numbers/rounded_converter/float_rounder'
 require 'faster_support/numbers/rounded_converter/rational_rounder'
 require 'faster_support/numbers/rounded_converter/decimal_rounder'

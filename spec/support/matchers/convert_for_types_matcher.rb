@@ -10,11 +10,11 @@ module FasterSupport
       end
 
       def with_converter(converter)
-        @converter = converter
+        @converter = converter; self
       end
 
       def with_options(options)
-        @option = options; self
+        @options = options; self
       end
 
       def to(value)
@@ -30,7 +30,7 @@ module FasterSupport
       end
 
       def description
-        "returns the same value as ActiveSupport"
+        "return the same value as ActiveSupport"
       end
 
       def failure_message
@@ -48,12 +48,14 @@ module FasterSupport
       end
 
       def to_type(type)
-        if type == Float
+        if type == Integer
+          Integer(number)
+        elsif type == Float
           Float(number)
         elsif type == Rational
           Rational(number.to_s)
         elsif type == BigDecimal
-          BigDecimal(number.to_s)
+          BigDecimal(number, Float::DIG)
         elsif type == String
           String(number)
         else
