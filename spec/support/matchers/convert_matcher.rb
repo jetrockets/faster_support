@@ -33,7 +33,7 @@ module FasterSupport
         if !converted_correctly?
           "expected to return #{value} but returned #{via_faster_support}"
         elsif !same_as_active_support?
-          "expected to return the same value as ActiveSupport"
+          "expected to return the same value as ActiveSupport (#{via_active_support}) but returned #{via_faster_support}"
         end
       end
 

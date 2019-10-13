@@ -8,15 +8,18 @@ module FasterSupport
       class FloatRounder < BaseRounder
         private
 
+        def negative?(number)
+          number < 0
+        end
+
         def truncate(number, precision)
           number.round(precision)
         end
 
         # It works incorrect with float numbers
         # that have more than Float::DIG digits in 
-        # its integer part, because in this case
-        # Float#round returns an incorrect value.
-        def to_string(number, precision)
+        # its integer part.
+        def to_string(number, precision, options)
           if number.zero? || precision <= 0
             String(number.to_i)
           else

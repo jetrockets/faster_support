@@ -7,40 +7,34 @@ RSpec.describe :number_to_rounded do
   describe "number" do
     context "when an Integer number is passed" do
       it { is_expected.to convert(123).to("123.000") }
-
-      it { is_expected.to convert(123).to("123.000") }
+      it { is_expected.to convert(-123).to("-123.000") }
     end
 
     context "when a Float number is passed" do
       it { is_expected.to convert(123.45).to("123.450") }
-
       it { is_expected.to convert(-123.45).to("-123.450") }
     end
 
     context "when a Rational number is passed" do
       it { is_expected.to convert(Rational(12345, 100)).to("123.450") }
-
       it { is_expected.to convert(Rational(-12345, 100)).to("-123.450") }
     end
 
     context "when a BigDecimal number is passed" do
       it { is_expected.to convert(BigDecimal(123.45, Float::DIG)).to("123.450") }
-
       it { is_expected.to convert(BigDecimal(-123.45, Float::DIG)).to("-123.450") }
     end
 
     context "when a string is passed to" do
       it { is_expected.to convert("123.45").to("123.450") }
-
       it { is_expected.to convert("-123.45").to("-123.450") }
 
       it { is_expected.to convert("0.12345e3").to("123.450") }
-
       it { is_expected.to convert("-0.12345e3").to("-123.450") }
 
       it do
         is_expected.to convert("This string does not contain any numbers")
-                        .to("This string does not contain any numbers")
+                           .to("This string does not contain any numbers")
       end
     end
 
@@ -165,7 +159,7 @@ RSpec.describe :number_to_rounded do
     end
 
     context "when options contain significant" do
-      context "and the number contains options[:precision] significant digits" do
+      context "and the number contains options[:precision] of significant digits" do
         it do
           is_expected.to convert_as_integer(123)
                           .with_options(precision: 3, significant: true)
@@ -191,7 +185,7 @@ RSpec.describe :number_to_rounded do
         end
       end
 
-      context "and the number contains more than options[:precision] significant digits" do
+      context "and the number contains more than options[:precision] of significant digits" do
         it do
           is_expected.to convert_as_integer(23456)
                           .with_options(precision: 2, significant: true)
@@ -271,6 +265,12 @@ RSpec.describe :number_to_rounded do
         end
 
         it do
+          is_expected.to convert_as_fractional(9.999)
+                          .with_options(precision: 2, significant: true)
+                          .to("10")
+        end
+
+        it do
           is_expected.to convert_as_fractional(0.0012345)
                           .with_options(precision: 3, significant: true)
                           .to("0.00123")
@@ -301,7 +301,7 @@ RSpec.describe :number_to_rounded do
         end
       end
 
-      context "and the number contains less than options[:precision] significant digits" do
+      context "and the number contains less than options[:precision] of significant digits" do
         it do
           is_expected.to convert_as_integer(0)
                           .with_options(precision: 2, significant: true)

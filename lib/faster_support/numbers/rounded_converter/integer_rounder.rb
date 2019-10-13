@@ -8,11 +8,15 @@ module FasterSupport
       class IntegerRounder < BaseRounder
         private
 
+        def negative?(number)
+          number < 0
+        end
+
         def truncate(number, precision)
           number.round(precision)
         end
 
-        def to_string(number, precision)
+        def to_string(number, precision, options)
           String(number)
         end
       end

@@ -6,30 +6,13 @@ module FasterSupport
   module Numbers
     class RoundedConverter < BaseConverter
       class RationalRounder < BaseRounder
-
         private
-        
-        # Decimal Places
 
-        def decimal_places_count(number)
-          if number <= -1 || number >= 1
-            integer_decimal_places_count(number)
-          else
-            fraction_decimal_places_count(number)
-          end
-        end
+        # Precision
 
-        def integer_decimal_places_count(number)
-          return 1 if number.zero?
-
-          Math.log10(number.to_i.abs).floor + 1
-        end
-
-        def fraction_decimal_places_count(number)
-          remainder = number.numerator % number.denominator
-          return 0 if remainder.zero?
-
-          1 - Math.log10((number.denominator / remainder).abs).floor
+        def negative?(number)
+          (number.numerator > 0 && number.denominator < 0) ||
+            (number.numerator < 0 && number.denominator > 0)
         end
 
         # Truncate
@@ -57,82 +40,49 @@ module FasterSupport
           number.round(-1) / 10
         end
 
-        # Adjust Precision
-
-        def adjust(string, precision, options)
-          if options[:significant]
-            string.size + precision - options[:precision]
-          else
-            precision
-          end
-        end
-
         # To String
 
         def to_string(number, precision, options)
-          string = String(number)
+          string = String(number.abs)
 
-          add_leading_zeros(string, precision)
-          remove_truncating_zeros(string, options)
-
-          add_dot(string, precision)
-          add_minus(string, number)
+          string = add_leading_zeros(string, precision)
+          string = add_decimal_separator(string, precision)
+          string = add_minus(number, string)
 
           string
         end
 
-        def a(number)
-          if number < 0 
-            String(number.abs) 
-          else
-            String(number)
-          end
-        end
-
         def add_leading_zeros(string, precision)
-          zeros = 1 + precision - string.size
-          zeros = 1 + precision - digits_count(number, string)
+          zeros = precision - string.size + 1
 
           zeros.times do
             string.insert(0, "0")
           end
+
+          string
         end
 
-        def remove_truncating_zeros(string, options)
-          return unless options[:significant]
-          zeros = options[:precision] - string.size
-
-          zeros.times do
-            string.delete_suffix!("0")
-          end
-        end
-
-        def add_dot(string, precision)
+        def add_decimal_separator(string, precision)
           return string if precision <= 0
 
-          dot_index = string.size - precision
-          string.insert(dot_index, ".")
+          string.insert(-1 - precision, ".")
+          string
         end
 
-        def digits_count(number, string)
-          number < 0 ? string.size - 1 : string.size
-        end
-
-        def add_minus(string, number)
+        def add_minus(number, string)
           string.insert(0, "-") if number < 0
+          string
         end
 
-        # Remove Trailing Zeros
+        # Trailing zeros
 
-        def insignificant_zeros(string, precision)
-          return string if precision <= 0
-
-          while string.getbyte(-1) == 48 do
-            string.delete_suffix!("0")
+        def trailing_zeros(string, precision, options)
+          if options[:strip_insignificant_zeros]
+            remove_trailing_zeros(string, precision)
           end
 
-          if string.getbyte(-1) == 46
-            string.delete_suffix!(".")
+          if options[:significant]
+            remove_truncating_zeros(string, precision, options)
           end
 
           string
