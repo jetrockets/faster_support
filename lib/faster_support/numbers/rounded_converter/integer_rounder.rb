@@ -12,12 +12,12 @@ module FasterSupport
           number < 0
         end
 
-        def truncate(number, precision)
-          number.round(precision)
+        def round(number, options)
+          number.round(precision(number, options))
         end
 
-        def to_string(number, precision, options)
-          String(number)
+        def to_string(rounded, precision)
+          String(rounded)
         end
       end
     end

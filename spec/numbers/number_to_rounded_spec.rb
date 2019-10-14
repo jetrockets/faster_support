@@ -283,6 +283,12 @@ RSpec.describe :number_to_rounded do
         end
 
         it do
+          is_expected.to convert_as_fractional(0.009999)
+                          .with_options(precision: 3, significant: true)
+                          .to("0.0100")
+        end
+
+        it do
           is_expected.to convert_as_integer(123)
                           .with_options(precision: 0, significant: true)
                           .to("123")

@@ -9,16 +9,19 @@ module FasterSupport
         end
 
         def convert(number, options)
-          precision = precision(number, options)
-          number = truncate(number, precision)
+          modulus = abs(number)
+          rounded = round(modulus, options)
 
-          string = to_string(number, precision, options)
-          string = trailing_zeros(string, precision, options)
+          string = a(rounded, number, options)
 
           string
         end
 
         private
+
+        def abs(number)
+          negative?(number) ? number.abs : number
+        end
 
         # Precision
 
@@ -35,70 +38,73 @@ module FasterSupport
         def decimal_places_count(number)
           return 1 if number.zero?
 
-          number = number.abs if negative?(number)
           Math.log10(number).floor + 1
+        end
+
+        # String
+
+        def a(rounded, number, options)
+          precision = precision(rounded, options)
+
+          string = to_string(rounded, precision)
+          process_trailing_zeros(string, precision, options)
+          add_minus(string, number, rounded)
+
+          string
         end
 
         # Trailing zeros
 
-        def trailing_zeros(string, precision, options)
+        def process_trailing_zeros(string, precision, options)
           if options[:strip_insignificant_zeros]
             remove_trailing_zeros(string, precision)
           else
             add_trailing_zeros(string, precision)
           end
+        end
 
-          if options[:significant]
-            remove_truncating_zeros(string, precision, options)
+        def add_trailing_zeros(string, precision)
+          return string if precision <= 0
+
+          zeros = precision - fraction_size(string)
+
+          zeros.times do
+            string.insert(-1, "0")
           end
 
           string
         end
 
-        def add_trailing_zeros(string, precision)
-          return if precision <= 0
-
-          zeros = precision - string.size + dot_index(string) + 1
-
-          zeros.times do
-            string.insert(-1, "0")
-          end
-        end
-
-        def dot_index(string)
+        def fraction_size(string)
           dot_index = string.rindex(".")
 
           unless dot_index
             string.insert(-1, ".")
+            dot_index = string.size - 1
           end
 
-          dot_index || (string.size - 2)
+          string.size - dot_index - 1
         end
 
         def remove_trailing_zeros(string, precision)
-          return if precision <= 0
+          return string if precision <= 0
 
           while string.getbyte(-1) == 48 do
             string.delete_suffix!("0")
           end
 
-          if string.getbyte(-1) == 46
-            string.delete_suffix!(".")
-          end
+          string.delete_suffix!(".")
+          string
         end
 
-        # Truncating zeros
+        # Add Minus
 
-        def remove_truncating_zeros(string, precision, options)
-          return if precision <= 0
-
-          zeros = string.size - options[:precision] - 1
-          zeros += 1 if string.getbyte(0) == '-'
-
-          if zeros > 0
-            string.delete_suffix!("0")
-            string.delete_suffix!(".")
+        def add_minus(string, number, rounded)
+          if negative?(number) && !rounded.zero?
+            string.insert(0, "-") 
           end
+
+          string
         end
       end
     end

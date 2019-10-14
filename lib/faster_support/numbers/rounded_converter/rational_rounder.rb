@@ -15,23 +15,25 @@ module FasterSupport
             (number.numerator < 0 && number.denominator > 0)
         end
 
-        # Truncate
+        # Round
 
-        def truncate(number, precision)
+        def round(number, options)
+          precision = precision(number, options)
+
           if precision < 0
-            truncate_integer(number, precision)
+            round_integer(number, precision)
           else
-            truncate_fraction(number, precision)
+            round_fraction(number, precision)
           end
         end
 
-        def truncate_integer(number, precision)
+        def round_integer(number, precision)
           number = number.numerator * 10 / number.denominator
 
           number.round(precision - 1) / 10
         end
 
-        def truncate_fraction(number, precision)
+        def round_fraction(number, precision)
           multiplier = 10 ** (precision + 1)
 
           numerator = number.numerator * multiplier
@@ -42,12 +44,31 @@ module FasterSupport
 
         # To String
 
-        def to_string(number, precision, options)
-          string = String(number.abs)
+        def a(rounded, number, options)
+          precision = precision(number, options)
 
+          string = String(rounded)
           string = add_leading_zeros(string, precision)
           string = add_decimal_separator(string, precision)
-          string = add_minus(number, string)
+          string = remove_truncating_zero(string, precision, options)
+          string = process_trailing_zeros(string, precision, options)
+          string = add_minus(string, number, rounded)
+
+          string
+        end
+
+        def remove_truncating_zero(string, precision, options)
+          return string unless options[:significant]
+          return string if precision <= 0
+          puts "!!!!!!!!"
+          puts string
+          puts options[:precision]
+          puts string.size
+
+          if options[:precision] == string.size - 2
+            string.delete_suffix!("0")
+            string.delete_suffix!(".")
+          end
 
           string
         end
@@ -69,20 +90,11 @@ module FasterSupport
           string
         end
 
-        def add_minus(number, string)
-          string.insert(0, "-") if number < 0
-          string
-        end
-
         # Trailing zeros
 
-        def trailing_zeros(string, precision, options)
+        def process_trailing_zeros(string, precision, options)
           if options[:strip_insignificant_zeros]
             remove_trailing_zeros(string, precision)
-          end
-
-          if options[:significant]
-            remove_truncating_zeros(string, precision, options)
           end
 
           string

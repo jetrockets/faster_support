@@ -12,18 +12,18 @@ module FasterSupport
           number < 0
         end
 
-        def truncate(number, precision)
-          number.round(precision)
+        def round(number, options)
+          number.round(precision(number, options))
         end
 
         # It works incorrect with float numbers
         # that have more than Float::DIG digits in 
         # its integer part.
-        def to_string(number, precision, options)
-          if number.zero? || precision <= 0
-            String(number.to_i)
+        def to_string(rounded, precision)
+          if rounded.zero? || precision <= 0
+            String(rounded.to_i)
           else
-            String(number)
+            String(rounded)
           end
 
           #sprintf(""%.#{precision}f", number)

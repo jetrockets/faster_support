@@ -12,15 +12,15 @@ module FasterSupport
           number.sign < 0
         end
 
-        def truncate(number, precision)
-          number.round(precision)
+        def round(number, options)
+          number.round(precision(number, options))
         end
 
-        def to_string(number, precision, options)
-          if number.zero? || precision <= 0
-            number.to_i.to_s
+        def to_string(rounded, precision)
+          if rounded.zero? || precision <= 0
+            rounded.to_i.to_s
           else
-            number.to_s("F")
+            rounded.to_s("F")
           end
         end
       end
