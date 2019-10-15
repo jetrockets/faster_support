@@ -270,7 +270,7 @@ RSpec.describe :number_to_rounded do
                           .to("10")
         end
 
-        it do
+        pending do
           is_expected.to convert_as_fractional(0.0012345)
                           .with_options(precision: 3, significant: true)
                           .to("0.00123")

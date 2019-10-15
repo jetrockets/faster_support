@@ -20,7 +20,7 @@ module FasterSupport
         def round(number, options)
           precision = precision(number, options)
 
-          if precision < 0
+          if precision <= 0
             round_integer(number, precision)
           else
             round_fraction(number, precision)
@@ -42,33 +42,32 @@ module FasterSupport
           number.round(-1) / 10
         end
 
-        # To String
+        # Assemble String
 
-        def a(rounded, number, options)
+        def assemble_string(number, rounded, options)
           precision = precision(number, options)
 
-          string = String(rounded)
-          string = add_leading_zeros(string, precision)
-          string = add_decimal_separator(string, precision)
-          string = remove_truncating_zero(string, precision, options)
-          string = process_trailing_zeros(string, precision, options)
-          string = add_minus(string, number, rounded)
+          if significant_digits_increased?(rounded, precision, options)
+            precision -= 1; rounded /= 10
+          end
 
-          string
+          to_string(rounded, number, precision, options)
         end
 
-        def remove_truncating_zero(string, precision, options)
-          return string unless options[:significant]
-          return string if precision <= 0
-          puts "!!!!!!!!"
-          puts string
-          puts options[:precision]
-          puts string.size
+        def significant_digits_increased?(rounded, precision, options)
+          options[:significant] && precision > 0 &&
+            options[:precision] + 1 == decimal_places_count(rounded)
+        end
 
-          if options[:precision] == string.size - 2
-            string.delete_suffix!("0")
-            string.delete_suffix!(".")
-          end
+        # To String
+
+        def to_string(rounded, number, precision, options)
+          string = String(rounded)
+
+          string = add_leading_zeros(string, precision)
+          string = add_decimal_separator(string, precision)
+          string = process_trailing_zeros(string, precision, options)
+          string = add_minus(string, number, rounded)
 
           string
         end

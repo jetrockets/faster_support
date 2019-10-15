@@ -16,11 +16,11 @@ module FasterSupport
           number.round(precision(number, options))
         end
 
-        def to_string(rounded, precision)
-          if rounded.zero? || precision <= 0
-            rounded.to_i.to_s
+        def to_string(number, precision)
+          if number.zero? || precision <= 0
+            number.to_i.to_s
           else
-            rounded.to_s("F")
+            number.to_s("F")
           end
         end
       end

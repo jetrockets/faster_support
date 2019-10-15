@@ -16,8 +16,8 @@ module FasterSupport
           number.round(precision(number, options))
         end
 
-        def to_string(rounded, precision)
-          String(rounded)
+        def to_string(number, precision)
+          String(number)
         end
       end
     end

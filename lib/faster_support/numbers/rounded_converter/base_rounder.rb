@@ -9,12 +9,9 @@ module FasterSupport
         end
 
         def convert(number, options)
-          modulus = abs(number)
-          rounded = round(modulus, options)
+          rounded = round(abs(number), options)
 
-          string = a(rounded, number, options)
-
-          string
+          assemble_string(number, rounded, options)
         end
 
         private
@@ -43,12 +40,12 @@ module FasterSupport
 
         # String
 
-        def a(rounded, number, options)
+        def assemble_string(number, rounded, options)
           precision = precision(rounded, options)
 
           string = to_string(rounded, precision)
-          process_trailing_zeros(string, precision, options)
-          add_minus(string, number, rounded)
+          string = process_trailing_zeros(string, precision, options)
+          string = add_minus(string, number, rounded)
 
           string
         end

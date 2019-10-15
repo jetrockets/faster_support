@@ -19,11 +19,11 @@ module FasterSupport
         # It works incorrect with float numbers
         # that have more than Float::DIG digits in 
         # its integer part.
-        def to_string(rounded, precision)
-          if rounded.zero? || precision <= 0
-            String(rounded.to_i)
+        def to_string(number, precision)
+          if number.zero? || precision <= 0
+            String(number.to_i)
           else
-            String(rounded)
+            String(number)
           end
 
           #sprintf(""%.#{precision}f", number)
