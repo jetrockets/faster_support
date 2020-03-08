@@ -18,6 +18,14 @@ Or install it yourself as:
 
     $ gem install faster_support
 
+## ActiveSupport Compatibility
+
+Feature                     | Status
+----------------------------|--------
+number_to_currency          | 
+number_to_delimited         |
+
+
 ## Benchmarks
 
 To run all suite of benchmarks use

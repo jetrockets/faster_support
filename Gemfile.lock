@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    faster_support (0.1.0)
+    faster_support (0.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -53,4 +53,4 @@ DEPENDENCIES
   terminal-table
 
 BUNDLED WITH
-   2.0.1
+   2.1.2
