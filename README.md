@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Feature                     | Status
 ----------------------------|--------
-number_to_currency          | 
+number_to_currency          |
 number_to_delimited         |
 
 
@@ -69,7 +69,7 @@ Comparison:
 
 Sponsored by [JetRockets](http://www.jetrockets.pro).
 
-![JetRockets](http://jetrockets.pro/jetrockets-white.png)
+![JetRockets](https://media.jetrockets.pro/jetrockets-white.png)
 
 Original idea by [@romul](https://github.com/romul) and [@Vankiru](https://github.com/Vankiru).
 
